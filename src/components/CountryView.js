@@ -1,10 +1,21 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { StyleSheet, View, Text, Image } from 'react-native';
 
-export default function CountryView(props){
+export default function CountryView({route}){ // Destructure props again
+
+    const country = route.params.country;
+
     return (
         <View>
-            <Text>Hello from the country view</Text>
+            <Text>{country.name}</Text>
+            <Image source={{uri: country.flag}} style={styles.logo}/>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    logo: {
+        width: 50,
+        height: 50
+    }
+})

@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableWithoutFeedback, Alert, TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-export default function CountryList({navigation}) {
+export default function CountryList({navigation}) { // instead of doing props.navigation
 
   const [countries, setCountries] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState("Americas")
   const [searchText, setSearchText] = useState("");
 
   function fetchCountries() {
-    fetch(`https://restcountries.eu/rest/v2/region/${selectedRegion}?fields=name`)
+    // semi colon used to grab any other data back eg. ;flag
+    fetch(`https://restcountries.eu/rest/v2/region/${selectedRegion}?fields=name;flag`) 
       .then(res => res.json())
       .then(data => setCountries(data))
   }
@@ -61,14 +62,14 @@ export default function CountryList({navigation}) {
 
       <FlatList
         data={countries}
-        keyExtractor={item => item.name} //key
-        renderItem={({ item }) => {
+        keyExtractor={country => country.name} //key
+        renderItem={({ item: country }) => { // changes item to be called country (alias)
           return (
             <TouchableWithoutFeedback
-              onPress={() => navigation.navigate('CountryDetail')}
+              onPress={() => navigation.navigate('CountryDetail', {country})}
             >
               <View>
-                <Text style={styles.text}>{item.name}</Text>
+                <Text style={styles.text}>{country.name}</Text>
               </View>
             </TouchableWithoutFeedback>
           )
