@@ -7,6 +7,7 @@ export default function App() {
 
   const [countries, setCountries] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState("Americas")
+  const [searchText, setSearchText] = useState("");
 
   function fetchCountries() {
     fetch(`https://restcountries.eu/rest/v2/region/${selectedRegion}?fields=name`)
@@ -18,12 +19,27 @@ export default function App() {
     Alert.alert(country.name)
   }
 
+  function handleSearch(){
+    if(searchText === ""){
+      fetchCountries();
+    } else {
+      const filteredCountries = countries.filter(country => {
+        return country.name.match(searchText)
+      })
+      setCountries(filteredCountries)
+    }
+  }
+
   // Empty array here is to stop this from running when the countries data updates
   // Can pass a value into the array which will trigger useEffect again when
   // that state is updated
   useEffect(() => {
     fetchCountries();
   }, [selectedRegion])
+
+  useEffect(() => {
+    handleSearch()
+  }, [searchText])
 
   return (
     <>
@@ -36,6 +52,14 @@ export default function App() {
         <Picker.Item label="Europe" value="Europe" />
         <Picker.Item label="Africa" value="Africa" />
       </Picker>
+
+      <TextInput 
+        style={{height:40}}
+        placeholder="Search for a country"
+        defaultValue={searchText}
+        onChangeText={text => setSearchText(text)}
+      />
+
       <FlatList
         data={countries}
         keyExtractor={item => item.name} //key
